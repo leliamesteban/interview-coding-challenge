@@ -2,7 +2,7 @@ from collections import Counter
 from math import gcd
 from functools import reduce
 
-def challenge3():
+def challenge3(colors) -> int:
   """
   Assume an array of arbitrary length whose elements represent colors of the set blue (b), green (g) or
   yellow (y). Write an algorithm which returns the number of subsets in which the array can be split so
@@ -44,14 +44,16 @@ def challenge3():
 
   valid_subset_sizes = 0
 
+  def is_valid_subset_size(subset_size):
+    if subset_size == 0:
+      return False
+    num_subsets = n // subset_size
+
+    return all(count % num_subsets == 0 for count in counts.values())
+
   # Check there is the same number of each color in each subset
   for divisor in find_divisors(n):
-      # Check if each color count divided by (n / divisor) is an integer
-      if all((counts[color] * divisor) % n == 0 for color in counts):
-          valid_subset_sizes += 1
+    if is_valid_subset_size(divisor):
+      valid_subset_sizes += 1
   
-  return valid_subset_sizes
-
-print(find_number_of_equal_subsets("yybbgg"))  # Output: 1
-print(find_number_of_equal_subsets("yybbg"))   # Output: 0
-print(find_number_of_equal_subsets("ybggby"))  # Output: 3
+  return valid_subset_sizes - 1
